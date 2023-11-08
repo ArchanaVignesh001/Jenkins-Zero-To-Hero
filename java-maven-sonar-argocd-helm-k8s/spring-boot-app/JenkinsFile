@@ -33,14 +33,14 @@ pipeline {
       environment {
         DOCKER_IMAGE = "archanavignesh001/ultimate-cicd:${BUILD_NUMBER}"
         // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
-        REGISTRY_CREDENTIALS = credentials('docker-cred')
+        DOCKERHUB_CREDENTIALS = credentials('docker-cred')
       }
       steps {
         script {
             sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
             def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker login -u $REGISTRY_CREDENTIALS --password-stdin
-	    dockerImage.push()
+            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+	    sh 'docker push archanavignesh001/ultimate-cicd:${BUILD_NUMBER}'
         }
       }
     }
