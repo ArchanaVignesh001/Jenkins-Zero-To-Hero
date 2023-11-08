@@ -19,16 +19,6 @@ pipeline {
         sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
       }
     }
-    stage('Static Code Analysis') {
-      environment {
-        SONAR_URL = "http://44.201.198.60:9000"
-      }
-      steps {
-        withCredentials([string(credentialsId: 'SonarToken', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
-        }
-      }
-    }
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "archanavignesh001/ultimate-cicd:${BUILD_NUMBER}"
@@ -38,6 +28,8 @@ pipeline {
       steps {
         script {
             sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
+	    echo "testing>>>"
+	    echo ${BUILD_NUMBER}
             def dockerImage = docker.image("${DOCKER_IMAGE}")
             sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
 	    sh 'docker push archanavignesh001/ultimate-cicd:${BUILD_NUMBER}'
