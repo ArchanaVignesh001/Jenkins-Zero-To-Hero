@@ -33,7 +33,7 @@ pipeline {
 
           }
                    //sh 'docker push archanavignesh001/ultimate-cicd:${BUILD_NUMBER}'
-	           dockerImage.push()
+	           sh 'docker push archanavignesh001/ultimate-cicd:${DOCKER_IMAGE}'
         }
       }
     }
