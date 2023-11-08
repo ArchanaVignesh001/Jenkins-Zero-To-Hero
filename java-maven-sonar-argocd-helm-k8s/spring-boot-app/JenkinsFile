@@ -32,7 +32,8 @@ pipeline {
                    sh 'docker login -u archanavignesh001 -p ${dockerhubpwd}'
 
           }
-                   sh 'docker push archanavignesh001/ultimate-cicd:${BUILD_NUMBER}'
+                   //sh 'docker push archanavignesh001/ultimate-cicd:${BUILD_NUMBER}'
+	           dockerImage.push()
         }
       }
     }
