@@ -26,12 +26,13 @@ pipeline {
         REGISTRY_CREDENTIALS = credentials('docker-cred')
       }
       steps {
-        script {
-            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
-            def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker.withRegistry('https://hub.docker.com/', 'docker-cred') {
-                dockerImage.push()
-            }
+        script{
+				   sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
+                   withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                   sh 'docker login -u archanavignesh001 -p ${dockerhubpwd}'
+
+          }
+                   sh 'docker push archanavignesh001/ultimate-cicd:${BUILD_NUMBER}'
         }
       }
     }
